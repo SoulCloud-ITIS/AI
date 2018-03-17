@@ -8,9 +8,9 @@ def get_model_ratio(model : Doc2Vec):
 
     result = 0
 
-    for i in range(0, 1):
-        temp = np.reshape(get_vectors_by_category(model, str(i)), (2, -2))
-        result += np.sum(temp) / temp.size
+    for i in range(0, 4):
+        temp_list = get_vectors_by_category(model, i)
+        result = np.add(result, temp_list)
 
     print("Подсчитано")
 

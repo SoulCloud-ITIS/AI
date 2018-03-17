@@ -2,31 +2,35 @@ from doc2vec_module import load
 from doc2vec_module.constants import FileConstants
 from doc2vec_module.train_model import get_model_for_genre
 
-love_prop = getattr(FileConstants, "LOVE_BOOK_TEST")
-fantasy_prop = getattr(FileConstants, "FANTASY_BOOK_TEST")
-love_model_prop = getattr(FileConstants, "MODEL_LOVE")
-fantasy_model_prop = getattr(FileConstants,"MODEL_FANTASY")
+prop_map = {
+    'ADVENTURE_BOOK_TRAIN': 'MODEL_ADVENTURE',
+    'ART_BOOK_TRAIN': 'MODEL_ART',
+    'DETECTIVE_BOOK_TRAIN': 'MODEL_DETECTIVE',
+    'FANTASTIC_BOOK_TRAIN': 'MODEL_FANTASTIC',
+    'FANTASY_BOOK_TRAIN': 'MODEL_FANTASY',
+    'LOVE_BOOK_TRAIN': 'MODEL_LOVE'
+}
 
-love_documents = load.get_doc(love_prop.fget(FileConstants()))
-fantasy_documents = load.get_doc(fantasy_prop.fget(FileConstants()))
-print('Данные для обучения загружены')
+genre_labels = ['приключений', 'искусства', 'детектива', 'фантастики', 'фэнтези', 'любви']
+count = 0
 
-print(" ")
+for key, value in prop_map.items():
+    print(" ")
+    print("Подгружаем свойство {0} с моделью {1}".format(key, value))
 
-print("Количество документов для любви : {0}, тип: {1}".format(len(love_documents), type(love_documents)))
-print("Количество документов для фантастики : {0}, тип: {1}".format(len(fantasy_documents), type(fantasy_documents)))
-print(" ")
+    prop = getattr(FileConstants, key)
+    model_prop = getattr(FileConstants, value)
 
-print("Обучаем модель для любовного жанра")
-love_model = get_model_for_genre(love_documents)
-print("Модель обучена")
-print(" ")
+    documents = load.get_doc(prop.fget(FileConstants()))
+    print("Получено документов для {0} : {1}, тип: {2}".format(genre_labels[count], len(documents), type(documents)))
+    print(" ")
 
-print("Обучаем модель для жанра фантастики")
-fantasy_model = get_model_for_genre(fantasy_documents)
-print("Модель обучена")
-print(" ")
+    print("Обучаем модель для {0}".format(genre_labels[count]))
+    learn_model = get_model_for_genre(documents)
+    print("Модель {0} обучена".format(genre_labels[count]))
+    print(" ")
 
-love_model.save(love_model_prop.fget(FileConstants()))
-fantasy_model.save(fantasy_model_prop.fget(FileConstants()))
-print("Модели сохранены")
+    learn_model.save(model_prop.fget(FileConstants()))
+    print("Модель {0} сохранена".format(genre_labels[count]))
+    print(" ")
+    count +=1

@@ -19,17 +19,11 @@ def get_doc_list(folder_name):
     return doc_list
 
 
-def get_doc_names(folder_name):
-    doc_name_list = []
-    file_list = [folder_name + '/' + name for name in os.listdir(folder_name) if name.endswith('txt')]
-    for file in file_list:
-        doc_name_list.append(file)
-        print('Документ с именем {0} найден'.format(file))
-    return doc_name_list
-
-
 def get_doc(folder_name):
     doc_list = get_doc_list(folder_name)
+
+    print(" ")
+    print("Начинаем обрабатывать тексты из папки {0}...".format(folder_name))
 
     tokenizer = RegexpTokenizer(r'\w+')
     ru_stop = stopwords.words('russian')
@@ -54,5 +48,8 @@ def get_doc(folder_name):
 
         td = TaggedDocument(to_unicode(str.encode(' '.join(stemmed_tokens))).split(), str(index))
         tagged_doc.append(td)
+
+    print("Тексты из папки {0} обработаны".format(folder_name))
+    print(" ")
 
     return tagged_doc
