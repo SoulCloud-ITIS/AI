@@ -1,8 +1,0 @@
-создаём папки:
-
-adventure
-art
-detective
-fantastic
-fantasy 
-love

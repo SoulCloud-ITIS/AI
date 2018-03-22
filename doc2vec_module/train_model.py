@@ -2,7 +2,7 @@ from gensim.models import Doc2Vec
 
 
 def get_model_for_genre(documents : list) -> Doc2Vec:
-    model = Doc2Vec(documents, dm=1, alpha=0.1, size=20, min_alpha=0.025)
+    model = Doc2Vec(documents, dm=1, alpha=0.9, size=20, min_alpha=0.025)
 
     print(" ")
     print("Начало обучения: ")
