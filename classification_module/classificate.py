@@ -1,31 +1,24 @@
-
 from classification_module.prepare_ratio import get_model_ratio
 from classification_module.numpy_proceed import preprocess_array
 from doc2vec_module.train_model import get_model_for_genre
 from doc2vec_module.constants import FileConstants
-from sklearn.multiclass import OneVsRestClassifier
+from sklearn.neural_network import MLPClassifier
 from gensim.models import Doc2Vec
 from doc2vec_module import load
 from pathlib import Path
-from sklearn import svm
 import numpy as np
 
 
 # Пример работы для отдельных книг
-random_state = np.random.RandomState(6)
-lin_clf = OneVsRestClassifier(svm.LinearSVC(random_state=random_state))
+clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
+                    hidden_layer_sizes=(15, 6), random_state=1)
 
-
-path_to_check1 = Path(__file__).parents[1].joinpath('путь ко второй книге')
+path_to_check1 = Path(__file__).parents[1].joinpath('books/test_book/Гарри Поттер и Дары Смерти.txt')
 documents1 = load.get_doc_from_file(str(path_to_check1))
-
-path_to_check2 = Path(__file__).parents[1].joinpath('путь к первой книге)
-#documents2 = load.get_doc_from_file(str(path_to_check2))
 
 print("Получаем модель для книги")
 print("")
 check_model1 = get_model_for_genre([documents1])
-#heck_model2 = get_model_for_genre([documents2])
 
 print("Начинаем подгружать модели по жанрам")
 print(" ")
@@ -47,9 +40,20 @@ np_train_list = np.asarray(train_list)
 
 counter = 0
 counter1 = 0
-check = [1, 2, 3, 4, 5, 6]
 
-lin_clf.fit(np_train_list, check)
+labels = []
+
+for i in range(1, 7):
+    a = np.empty(6)
+    a.fill(i)
+    labels.append(a)
+
+labels = np.asarray(labels)
+print(np_train_list)
+print("======================")
+print(labels)
+
+clf.fit(np_train_list, [1, 2, 3, 4, 5, 6])
 
 test = []
 
@@ -60,11 +64,8 @@ test = np.asarray(test)
 
 for i in range(6):
     print("Расчёт для жанра \"{0}\"".format(genre_labels[counter]))
-    test[counter] = check_train1
+    check = test.copy()
+    check[counter] = check_train1
+    print(clf.predict(check))
 
-    arr = lin_clf.predict(test)
-
-    result = (np.sum(arr) / np.size(arr)) / 10
-
-    print(lin_clf.predict(test))
     counter +=1
